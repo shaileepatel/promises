@@ -20,7 +20,7 @@ var fetchProfileAndWriteToFile = function(readFilePath, writeFilePath) {
       return requestAsync('https://api.github.com/users/' + username, { json: true });
     })
     .then((res) => {
-      return fs.writeFileAsync(writeFilePath, JSON.stringify(res));
+      return fs.writeFileAsync(writeFilePath, JSON.stringify(res.body));
     })
     .catch((err) => {
       console.log(err);
