@@ -8,14 +8,25 @@
  * HINT: We exported some similar promise-returning functions in previous exercises
  */
 
-var fs = require('fs');
 var Promise = require('bluebird');
-
+var fs = Promise.promisifyAll(require('fs'));
+var requestAsync = Promise.promisify(require('request'));
 
 
 var fetchProfileAndWriteToFile = function(readFilePath, writeFilePath) {
-  // TODO
+  return fs.readFileAsync(readFilePath)
+    .then((fileData) => {
+      var username = fileData.toString().split('\n')[0];
+      return requestAsync('https://api.github.com/users/' + username, { json: true });
+    })
+    .then((res) => {
+      return fs.writeFileAsync(writeFilePath, JSON.stringify(res));
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
+
 
 // Export these functions so we can test them
 module.exports = {
